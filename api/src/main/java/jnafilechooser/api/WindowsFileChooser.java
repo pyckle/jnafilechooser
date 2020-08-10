@@ -80,6 +80,8 @@ public class WindowsFileChooser
 	protected File currentDirectory;
 	protected ArrayList<String[]> filters;
 
+	private String defaultFileName;
+
 	/**
 	 * creates a new file chooser
 	 */
@@ -110,6 +112,16 @@ public class WindowsFileChooser
 	public WindowsFileChooser(String currentDirectoryPath) {
 		this(currentDirectoryPath != null ?
 			new File(currentDirectoryPath) : null);
+	}
+
+	public String getDefaultFileName()
+	{
+		return defaultFileName;
+	}
+
+	public void setDefaultFileName(String defaultFileName)
+	{
+		this.defaultFileName = defaultFileName;
 	}
 
 	// this is a package private method used by the JnaFileChooser
@@ -188,6 +200,11 @@ public class WindowsFileChooser
 		final int bufferSize = 4 * bufferLength + 1;
 		params.lpstrFile = new Memory(bufferSize);
 		params.lpstrFile.clear(bufferSize);
+
+		if (defaultFileName != null)
+		{
+			params.lpstrFile.setWideString(0, defaultFileName);
+		}
 
 		// nMaxFile
 		// http://msdn.microsoft.com/en-us/library/ms646839.aspx:
