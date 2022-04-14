@@ -50,6 +50,10 @@ public class WindowsFolderBrowser
 		this.title = title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	/**
 	 * displays the dialog to the user
 	 *
@@ -78,7 +82,7 @@ public class WindowsFolderBrowser
 			// be more than big enough
 			final Pointer path = new Memory(1024 * 4);
 			Shell32.SHGetPathFromIDListW(pidl, path);
-			final String filePath = path.getString(0, true);
+			final String filePath = path.getWideString(0);
 			final File file = new File(filePath);
 			Ole32.CoTaskMemFree(pidl);
 			return file;

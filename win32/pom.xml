@@ -6,15 +6,30 @@
 		<groupId>jnafilechooser</groupId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
-	<groupId>jnafilechooser</groupId>
 	<artifactId>jnafilechooser-win32</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>4.5.1</version>
+			<version>5.5.0</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>jnafilechooser.win32</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -12,6 +12,7 @@ package jnafilechooser.api;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import jnafilechooser.win32.Comdlg32;
 
@@ -71,8 +72,8 @@ import com.sun.jna.WString;
  * interfere with each other. Unfortunately there doesn't seem to be a way
  * to override this behaviour.
  *
- * {@link http://msdn.microsoft.com/en-us/library/ms646839.aspx}
- * {@link http://winrun4j.sourceforge.net/}
+ * <a href="http://msdn.microsoft.com/en-us/library/ms646839.aspx">MSDN Documentation</a>
+ * <a href="http://winrun4j.sourceforge.net">Winrun4j Project</a>
  */
 public class WindowsFileChooser
 {
@@ -80,7 +81,8 @@ public class WindowsFileChooser
 	protected File currentDirectory;
 	protected ArrayList<String[]> filters;
 
-	private String defaultFileName;
+	protected String defaultFilename = "";
+	protected String dialogTitle = "";
 
 	/**
 	 * creates a new file chooser
@@ -114,16 +116,6 @@ public class WindowsFileChooser
 			new File(currentDirectoryPath) : null);
 	}
 
-	public String getDefaultFileName()
-	{
-		return defaultFileName;
-	}
-
-	public void setDefaultFileName(String defaultFileName)
-	{
-		this.defaultFileName = defaultFileName;
-	}
-
 	// this is a package private method used by the JnaFileChooser
 	// facade to directly set the filter list
 	void setFilters(ArrayList<String[]> filters) {
@@ -133,15 +125,28 @@ public class WindowsFileChooser
 	/**
 	 * add a filter to the user-selectable list of file filters
 	 *
-	 * @param filter you must pass at least 2 arguments, the first argument
-	 *               is the name of this filter and the remaining arguments
+	 * @param name name of the filter
+	 * @param filter you must pass at least 1 argument, the arguments
 	 *               are the file extensions.
 	 */
-	public void addFilter(String ... filter) {
-		if (filter.length < 2) {
+	public void addFilter(String name, String... filter) {
+		if (filter.length < 1) {
 			throw new IllegalArgumentException();
 		}
-		filters.add(filter);
+		ArrayList<String> parts = new ArrayList<>();
+		parts.add(name);
+		Collections.addAll(parts, filter);
+		filters.add(parts.toArray(new String[parts.size()]));
+	}
+
+	/**
+	 * set a title name
+	 *
+	 * @param tname Title of dialog
+	 * 
+	 */
+	public void setTitle(String tname) {
+		this.dialogTitle = tname;
 	}
 
 	/**
@@ -188,7 +193,7 @@ public class WindowsFileChooser
 			// enable resizing of the dialog
 			| Comdlg32.OFN_ENABLESIZING;
 
-		params.hwndOwner = Native.getWindowPointer(parent);
+		params.hwndOwner = parent == null ? null : Native.getWindowPointer(parent);
 
 		// lpstrFile contains the selection path after the dialog
 		// returns. It must be big enough for the path to fit or
@@ -199,11 +204,13 @@ public class WindowsFileChooser
 		// 4 bytes per char + 1 null byte
 		final int bufferSize = 4 * bufferLength + 1;
 		params.lpstrFile = new Memory(bufferSize);
-		params.lpstrFile.clear(bufferSize);
-
-		if (defaultFileName != null)
-		{
-			params.lpstrFile.setWideString(0, defaultFileName);
+		if (!defaultFilename.isEmpty()) {
+			params.lpstrFile.setWideString(0, defaultFilename);
+		} else {
+		    params.lpstrFile.clear(bufferSize);
+		}
+		if (!dialogTitle.isEmpty()) {
+			params.lpstrTitle = new WString(dialogTitle);
 		}
 
 		// nMaxFile
@@ -233,7 +240,7 @@ public class WindowsFileChooser
 			Comdlg32.GetSaveFileNameW(params);
 
 		if (approved) {
-			final String filePath = params.lpstrFile.getString(0, true);
+			final String filePath = params.lpstrFile.getWideString(0);
 			selectedFile = new File(filePath);
 			final File dir = selectedFile.getParentFile();
 			currentDirectory = dir;
@@ -307,5 +314,9 @@ public class WindowsFileChooser
 	 */
 	public File getCurrentDirectory() {
 		return currentDirectory;
+	}
+
+	public void setDefaultFilename(String defaultFilename) {
+		this.defaultFilename = defaultFilename;
 	}
 }

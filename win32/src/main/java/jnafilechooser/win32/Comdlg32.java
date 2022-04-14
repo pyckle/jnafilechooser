@@ -40,10 +40,10 @@ public class Comdlg32
 		public int nFilterIndex;
 		public Pointer lpstrFile;
 		public int nMaxFile;
-		public String lpstrFileTitle;
-		public int nMaxFileTitle;
+		public String lpstrDialogTitle;
+		public int nMaxDialogTitle;
 		public WString lpstrInitialDir;
-		public String lpstrTitle;
+		public WString lpstrTitle;
 		public int Flags;
 		public short nFileOffset;
 		public short nFileExtension;
@@ -53,11 +53,11 @@ public class Comdlg32
 		public Pointer lpTemplateName;
 
 		@Override
-		protected List getFieldOrder() {
+		protected List<String> getFieldOrder() {
 			return Arrays.asList(new String[] { "lStructSize",
 				"hwndOwner","hInstance","lpstrFilter","lpstrCustomFilter"
 			,"nMaxCustFilter","nFilterIndex","lpstrFile","nMaxFile"
-			,"lpstrFileTitle","nMaxFileTitle","lpstrInitialDir","lpstrTitle"
+			,"lpstrDialogTitle","nMaxDialogTitle","lpstrInitialDir","lpstrTitle"
 			,"Flags","nFileOffset","nFileExtension","lpstrDefExt"
 			,"lCustData","lpfnHook","lpTemplateName"
 			});
