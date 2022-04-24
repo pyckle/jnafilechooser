@@ -38,7 +38,9 @@ import com.sun.jna.Platform;
  *     // do something with selected
  * }
  *
- * @see JFileChooser, WindowsFileChooser, WindowsFileBrowser
+ * @see JFileChooser
+ * @see WindowsFileChooser
+ * @see WindowsFolderBrowser
  */
 public class JnaFileChooser
 {
@@ -103,7 +105,7 @@ public class JnaFileChooser
 	/**
 	 * creates a new file chooser with the specified initial directory
 	 *
-	 * @param currentDirectory the initial directory
+	 * @param currentDirectoryPath the initial directory
 	 */
 	public JnaFileChooser(String currentDirectoryPath) {
 		this(currentDirectoryPath != null ?
@@ -309,7 +311,7 @@ public class JnaFileChooser
 	/**
 	 * set a title name
 	 *
-	 * @param Title of dialog
+	 * @param title of dialog
 	 * 
 	 */
 	public void setTitle(String title) {
@@ -319,7 +321,7 @@ public class JnaFileChooser
 	/**
 	 * set a open button name
 	 *
-	 * @param open button text
+	 * @param buttonText button text
 	 * 
 	 */
 	public void setOpenButtonText(String buttonText) {
@@ -329,7 +331,7 @@ public class JnaFileChooser
 	/**
 	 * set a save button name
 	 *
-	 * @param save button text
+	 * @param buttonText button text
 	 * 
 	 */
 	public void setSaveButtonText(String buttonText) {
